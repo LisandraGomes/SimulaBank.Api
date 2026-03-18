@@ -1,0 +1,19 @@
+# Git ignore 
+# Pasta de configuração do Visual Studio
+.vs/
+
+# Pastas de build
+bin/
+obj/
+
+# Arquivos de usuário do Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Configurações locais
+appsettings.Development.json

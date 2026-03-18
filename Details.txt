@@ -1,0 +1,22 @@
+Api: Simula Bank
+Detalhes: O Core da implementação de alguns serviços simulados de um banco.
+
+Arquitetura: Hexagonal, Ports and Adapters
+Swagger implantado, e arquivo de injeção de dependência separado do program.
+
+Framework: .NET 9
+
+Banco de dados, no Docker, sendo SQL Server, imagem criada local, disponível a criação das tabelas no arquivo dentro da pasta BD.
+
+Detalhes das informações do banco:
+- Senha salva em Hexadecimal
+
+Endpoints:
+
+Login: Será realizado através de um input de CPF ou E-mail, combinado com a senha para gerar uma autenticação JWT, isso será validado com alguns métodos internos, se é um CPF, ou se é um E-mail, adicionado de regras de negócio que não deixam ambos serem nulos ao mesmo tempo.
+Foi realizado uma Service dedicada para as associações da Autenticação, fazendo a transformação das informações para o token e a transformação da senha para o padrão centralizado em hexadecimal.
+
+- Melhorias a serem implementadas :
+1 . Sistema de Cache das consultas do banco.
+
+Para o Retorno do endpoit:Foi criado um retorno padrão, um Pattern Result que irá absorver mensagens de erros, status code ou sucesso com o item retornado, de forma genérica para ser reaproveitado o mesmo padrão em todos os pontos. Isso trará a centralização e a facilidade do gerenciamento de retorno. Combinado com um método de extensão para o IActionResult da Controller para absorver o StatusCode do próprio Pattern.
