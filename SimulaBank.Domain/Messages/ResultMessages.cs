@@ -10,5 +10,10 @@
         public const string ClientMustBeAdult = "Usuário deve ser maior de 18 anos.";
         public const string UserLogonSuccess = "Login realizado com sucesso.";
         public const string UserExisting = "Usuário já cadastrado.";
+
+        #region Pattern
+        public const string InternalError = "Algo deu errado, tente novamente.";
+        #endregion
+
     }
 }

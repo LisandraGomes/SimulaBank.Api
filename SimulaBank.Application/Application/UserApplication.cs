@@ -27,12 +27,13 @@ namespace SimulaBank.Application.Application
                     return new PatternResult(HttpStatusCode.UnprocessableEntity, ResultMessages.CpfNotCorrect);
                 if (!VerifyTypeService.IsEmail(request.Email))
                     return new PatternResult(HttpStatusCode.UnprocessableEntity, ResultMessages.EmailNotCorrect);
-                if (DateTime.Parse(request.BirthDate) < DateTime.Now.AddYears(-18))
+                var date = DateTime.Parse(request.BirthDate);
+                 if (DateTime.Parse(request.BirthDate) > DateTime.Now.AddYears(-18))
                     return new PatternResult(HttpStatusCode.UnprocessableEntity, ResultMessages.ClientMustBeAdult);
 
                 var user = await _userRepository.GetUserByLogin(request.Email, request.Cpf);
                 if (user.Id != Guid.Empty)
-                    return new PatternResult(HttpStatusCode.UnprocessableEntity, ResultMessages.UserExisting);
+                    return new PatternResult(HttpStatusCode.OK, ResultMessages.UserExisting);
                 else
                 {
                     var passwordHash = await Task.FromResult(_authServices.ComputeHash(request.Password));
@@ -43,8 +44,19 @@ namespace SimulaBank.Application.Application
             }
             catch (Exception ex)
             {
-                return new PatternResult(HttpStatusCode.InternalServerError, ex.Message);
+                return new PatternResult(HttpStatusCode.InternalServerError, ResultMessages.InternalError);
             }
         }
+
+        public async Task<PatternResult> UpdateUser(Guid id, UpdateUserInput request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PatternResult> DeleteUser(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

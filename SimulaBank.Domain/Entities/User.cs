@@ -18,6 +18,11 @@ namespace SimulaBank.Domain.Entities
         public int IdRole { get; set; }
         public List<Permission>? Permissions { get; set; }
 
+        public User()
+        {
+             
+        }
+
         public User(Guid id, string name, string midName, string cpf, DateTime birthDate, string password, string role, bool active, List<Permission> permissions)
         {
             Id = id;

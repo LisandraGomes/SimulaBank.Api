@@ -4,3 +4,19 @@ GET {{SimulaBank.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{SimulaBank.API_HostAddress}}/User/Register
+Acept: application/json
+Content-Type: application/json
+{
+  "name": "Lisandra",
+  "midName": "Bomfim",
+  "email": "lisandragomes53@gmail.com",
+  "cpf": "07601499502",
+  "birthDate": "23/07/2000",
+  "password": "simula@bank",
+  "idTipoUsuario": 2,
+  "userMaster": true
+}
+
+###

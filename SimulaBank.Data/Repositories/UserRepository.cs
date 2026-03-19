@@ -24,9 +24,9 @@ namespace SimulaBank.Data.Repositories
 
         public async Task<User> GetUserByLogin(string? email, string? cpf)
         {
-            var sql = @"SELECT Id,
-                                FirstName, 
-                                MidName, 
+            var sql = @"SELECT Id AS Id,
+                                FirstName AS Name, 
+                                MidName AS MidName, 
                                 Cpf, 
                                 Email, 
                                 Password, 
@@ -38,10 +38,13 @@ namespace SimulaBank.Data.Repositories
                          WHERE 
                                 Email = @Email 
                                 OR Cpf = @Cpf";
+
             using (var connection = new SqlConnection(_connectionString))
             {
+                connection.Open();
                 return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email, Cpf = cpf });
             }
+
         }
 
         public async Task<bool> CheckThePassword(string cpf, string passwordHash)
@@ -77,7 +80,7 @@ namespace SimulaBank.Data.Repositories
                     await connection.ExecuteAsync(sql, user);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while inserting the user: {ex.Message}");
                 throw;
@@ -99,6 +102,6 @@ namespace SimulaBank.Data.Repositories
                 await connection.ExecuteAsync(sql, parameters);
             }
         }
-    
+
     }
 }
