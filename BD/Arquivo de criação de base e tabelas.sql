@@ -32,7 +32,7 @@ VALUES
 
 GRANT SELECT, INSERT, UPDATE ON [User] TO app_apicore;
 
-SELECT * FROM [User] WHERE Email = '' Or Cpf = '07601499502'
+SELECT * FROM [Role] WHERE Email = '' Or Cpf = '07601499502'
 
 --Criar tabela de permissões para o usuario
 CREATE TABLE Role (
@@ -43,6 +43,7 @@ CREATE TABLE Role (
 );
 
 INSERT INTO [Role] Values('Master', 'UsuarioMaster', 1);
+INSERT INTO [Role] Values('InvetstorCliente', 'Inverstidor dos cofrinhos', 1);
 
 GRANT SELECT ON [Role] TO app_apicore;
 
@@ -50,8 +51,13 @@ CREATE TABLE Permission (
     Id INT NOT NULL CONSTRAINT PK_Permissao PRIMARY KEY,
     PermissionName NVARCHAR(100) NOT NULL,
     [Description] NVARCHAR(255) NULL,
-    Active BIT NOT NULL DEFAULT 1
+    RoleId INT NOT NULL,
+    Active BIT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_Role_id_permission FOREIGN KEY(RoleId) REFERENCES [Role](Id)
 );
+
+INSERT INTO [Permission] VALUES('little_box', 'Acesso a realizar caixinhas proprias.',2),
+('information_user','Acesso as informações do usuários na tela.',2);
 
 CREATE TABLE UserPermissions (
     Id UNIQUEIDENTIFIER NOT NULL 
@@ -64,3 +70,4 @@ CREATE TABLE UserPermissions (
         FOREIGN KEY (UserId)
         REFERENCES [User](Id)
 );
+

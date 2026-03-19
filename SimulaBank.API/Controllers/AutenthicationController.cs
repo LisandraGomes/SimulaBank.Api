@@ -20,15 +20,11 @@ namespace SimulaBank.API.Controllers
         [HttpPost("")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(AuthUserInput request)
         {
             var result = await _authApplication.Login(request);
             return ActionResultExtension.ToActionResult(result);
         }
-
-        //public IActionResult Register()
-        //{
-        //    return Ok("Register");
-        //}
     }
 }

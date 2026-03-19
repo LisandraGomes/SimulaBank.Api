@@ -23,9 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        // Aponta para o JSON correto
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Simula Bank v1");
-        // Deixa o Swagger na raiz (http://localhost:5232/)
         c.RoutePrefix = string.Empty;
     });
 }

@@ -1,8 +1,17 @@
-﻿using NPOI.SS.Formula.Functions;
-using System.Net;
+﻿using System.Net;
 
 namespace SimulaBank.Application.Outputs
 {
+    public class PatternResult
+    {
+        public HttpStatusCode StatusCode { get; set; }
+        public string? Message { get; set; }
+        public PatternResult(HttpStatusCode statusCode, string message)
+        {
+            StatusCode = statusCode;
+            Message = message;
+        }
+    }
     public class PatternResult<T>
     {
         public HttpStatusCode StatusCode { get; set; }
@@ -14,7 +23,7 @@ namespace SimulaBank.Application.Outputs
             StatusCode = HttpStatusCode.OK;
             Object = item;
         }
-        public PatternResult(HttpStatusCode statusCode,string message)
+        public PatternResult(HttpStatusCode statusCode, string message)
         {
             StatusCode = statusCode;
             Object = default(T);

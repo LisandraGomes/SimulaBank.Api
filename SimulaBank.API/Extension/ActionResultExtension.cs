@@ -13,5 +13,13 @@ namespace SimulaBank.API.Extension
             };
 
         }
+        public static IActionResult ToActionResult(this PatternResult result)
+        {
+            return new ObjectResult(result)
+            {
+                StatusCode = (int)result.StatusCode
+            };
+
+        }
     }
 }
