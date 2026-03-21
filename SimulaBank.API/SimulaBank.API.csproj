@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimulaBank.Application\SimulaBank.Application.csproj" />
+    <ProjectReference Include="..\SimulaBank.Infrastructure\SimulaBank.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

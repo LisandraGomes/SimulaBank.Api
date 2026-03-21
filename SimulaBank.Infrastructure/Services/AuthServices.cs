@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SimulaBank.Domain.Entities;
 using SimulaBank.Domain.Interfaces.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace SimulaBank.Infrastructure.Services
 {
@@ -31,18 +33,22 @@ namespace SimulaBank.Infrastructure.Services
             }
         }
 
-        public string GenerateToken(string userLogin, string role)
+        public string GenerateToken(string userEmail, string userCpf, bool emailAutorized, string role, string roleDescription, List<Permission> permissions)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             string audience = _configuration["Jwt:Audience"];
             string issuer = _configuration["Jwt:Issuer"];
 
             var credential = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+            var roleJson = JsonSerializer.Serialize(new { Id = role, Description = roleDescription });
+            var user = JsonSerializer.Serialize(new { Cpf = userCpf, Email = userEmail, Authorized = emailAutorized });
+            var permission = JsonSerializer.Serialize(permissions);
 
             var claims = new[]
             {
-                new Claim("userlogin", userLogin),
-                new Claim(ClaimTypes.Role, role)
+                new Claim("user", user),
+                new Claim("role", roleJson),
+                new Claim("permissions", permission)
             };
 
             var token = new JwtSecurityToken(

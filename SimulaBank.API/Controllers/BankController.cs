@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimulaBank.Application.Input;
+using SimulaBank.Application.Interfaces;
 
 namespace SimulaBank.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class BankBoxController : ControllerBase
+    public class BankController : ControllerBase
     {
-        public BankBoxController()
+        private readonly IBankApplication _bankApplication;
+        public BankController(IBankApplication bankApplication)
         {
-
+            _bankApplication = bankApplication;
         }
         [HttpPost("Create")]
         [Authorize(Roles = "InvetstorCliente")]
         public async Task<IActionResult> CreateBankBox(PiggyBoxRegisterInput request)
         {
+            //var result = await _bankApplication.CreateBankBox(request);
             return Ok();
         }
 

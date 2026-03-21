@@ -9,6 +9,7 @@
         public const string EmailNotCorrect = "Email não está corretamente formatado.";
         public const string ClientMustBeAdult = "Usuário deve ser maior de 18 anos.";
         public const string UserLogonSuccess = "Login realizado com sucesso.";
+        public const string UserRegisterSucess = "Usuario {0} registrado com sucesso.";
         public const string UserExisting = "Usuário já cadastrado.";
 
         #region Pattern

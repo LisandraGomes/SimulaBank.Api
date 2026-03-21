@@ -20,3 +20,12 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{SimulaBank.API_HostAddress}}/Autenthication/
+Acept: application/json
+Content-type: application/json
+{
+  "Login":  "07601499502",
+  "Password": "simula@bank",
+  "TokenRefreshOrAcess": ""
+}

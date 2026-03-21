@@ -1,8 +1,10 @@
 using SimulaBank.Application.DependencyInjection;
+using SimulaBank.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfraestructure(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

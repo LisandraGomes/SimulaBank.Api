@@ -32,8 +32,6 @@ VALUES
 
 GRANT SELECT, INSERT, UPDATE ON [User] TO app_apicore;
 
-SELECT * FROM [Role] WHERE Email = '' Or Cpf = '07601499502'
-
 --Criar tabela de permissões para o usuario
 CREATE TABLE [Role] (
     Id INT NOT NULL CONSTRAINT PK_RoleUser PRIMARY KEY IDENTITY(1, 1),

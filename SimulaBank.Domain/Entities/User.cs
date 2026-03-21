@@ -16,14 +16,14 @@ namespace SimulaBank.Domain.Entities
         public bool Active { get; set; }
         public bool EmailAthorization { get; set; }
         public int IdRole { get; set; }
-        public List<Permission>? Permissions { get; set; }
+        public string RoleDescription { get; set; }
 
         public User()
         {
              
         }
 
-        public User(Guid id, string name, string midName, string cpf, DateTime birthDate, string password, string role, bool active, List<Permission> permissions)
+        public User(Guid id, string name, string midName, string cpf, DateTime birthDate, string password, string role, bool active)
         {
             Id = id;
             Name = name;
@@ -33,7 +33,6 @@ namespace SimulaBank.Domain.Entities
             Password = password;
             Role = role;
             Active = active;
-            Permissions = permissions;
         }
     }
 }

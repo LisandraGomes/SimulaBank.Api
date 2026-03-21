@@ -24,17 +24,19 @@ namespace SimulaBank.Data.Repositories
 
         public async Task<User> GetUserByLogin(string? email, string? cpf)
         {
-            var sql = @"SELECT Id AS Id,
+            var sql = @"SELECT u.Id,
                                 FirstName AS Name, 
-                                MidName AS MidName, 
+                                MidName, 
                                 Cpf, 
                                 Email, 
                                 Password, 
                                 BirthDate, 
                                 RegistrationDate, 
                                 EmailAthorization, 
-                                IdRole 
-                         FROM [User] 
+                                IdRole,
+                                r.Description AS RoleDescription
+                         FROM [User] u
+                         INNER JOIN [Role] r ON u.IdRole = r.Id
                          WHERE 
                                 Email = @Email 
                                 OR Cpf = @Cpf";
@@ -49,7 +51,7 @@ namespace SimulaBank.Data.Repositories
 
         public async Task<bool> CheckThePassword(string cpf, string passwordHash)
         {
-            var sql = "SELECT Top 1 FROM [User] WHERE PasswordHash = @PasswordHash AND Cpf = @Cpf";
+            var sql = "SELECT Top 1 1 FROM [User] WHERE Password = @PasswordHash AND Cpf = @Cpf";
             using (var connection = new SqlConnection(_connectionString))
             {
                 return await connection.QueryFirstOrDefaultAsync<bool>(sql, new { PasswordHash = passwordHash, Cpf = cpf });

@@ -16,7 +16,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SimulaBank.Data\SimulaBank.Data.csproj" />
     <ProjectReference Include="..\SimulaBank.Domain\SimulaBank.Domain.csproj" />
-    <ProjectReference Include="..\SimulaBank.Infrastructure\SimulaBank.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Input\Services\" />
   </ItemGroup>
 
 </Project>

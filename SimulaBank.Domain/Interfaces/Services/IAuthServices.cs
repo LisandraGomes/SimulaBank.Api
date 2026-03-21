@@ -1,8 +1,11 @@
-﻿namespace SimulaBank.Domain.Interfaces.Services
+﻿
+using SimulaBank.Domain.Entities;
+
+namespace SimulaBank.Domain.Interfaces.Services
 {
     public interface IAuthServices
     {
         string ComputeHash(string password);
-        string GenerateToken(string userId, string role);
+        string GenerateToken(string userEmail, string userCpf, bool emailAutorized, string role, string roleDescription, List<Permission> permissions);
     }
 }

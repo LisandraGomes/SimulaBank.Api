@@ -32,13 +32,13 @@ namespace SimulaBank.Application.Application
                     return new PatternResult(HttpStatusCode.UnprocessableEntity, ResultMessages.ClientMustBeAdult);
 
                 var user = await _userRepository.GetUserByLogin(request.Email, request.Cpf);
-                if (user.Id != Guid.Empty)
+                if (user is not null && user.Id != Guid.Empty)
                     return new PatternResult(HttpStatusCode.OK, ResultMessages.UserExisting);
                 else
                 {
                     var passwordHash = await Task.FromResult(_authServices.ComputeHash(request.Password));
                     await _userRepository.InsertUser(request.Name, request.MidName, request.Cpf, request.Email, passwordHash, DateTime.Parse(request.BirthDate), (int)request.IdTipoUsuario);
-                    var result = new PatternResult(HttpStatusCode.OK, ResultMessages.UserLogonSuccess);
+                    var result = new PatternResult(HttpStatusCode.OK, String.Format(ResultMessages.UserRegisterSucess, request.Name));
                     return result;
                 }
             }
