@@ -9,6 +9,7 @@ using SimulaBank.Data.Repositories;
 using SimulaBank.Domain.Interfaces.Repositories;
 using SimulaBank.Domain.Interfaces.Services;
 using SimulaBank.Domain.Utils;
+using System.Security;
 
 namespace SimulaBank.Application.DependencyInjection
 {
@@ -16,6 +17,10 @@ namespace SimulaBank.Application.DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IAuthApplication, AuthApplication>();
+            services.AddScoped<IUserApplication, UserApplication>();
+            services.AddScoped<IBankApplication, BankApplication>();
+
             services.AddServices();
             services.AddAutoMapper();
             services.AddRepositories();
@@ -29,14 +34,14 @@ namespace SimulaBank.Application.DependencyInjection
 
             services.AddTransient<LoginAuthValidators>();
             services.AddTransient<VerifyTypeService>();
-            services.AddScoped<IAuthApplication, AuthApplication>();
-            services.AddScoped<IUserApplication, UserApplication>();
             return services;
         }
         
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
+            services.AddScoped<IPiggyRepository, PiggyRepository>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services)

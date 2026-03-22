@@ -42,12 +42,13 @@ namespace SimulaBank.Infrastructure.Services
             var credential = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var roleJson = JsonSerializer.Serialize(new { Id = role, Description = roleDescription });
             var user = JsonSerializer.Serialize(new { Cpf = userCpf, Email = userEmail, Authorized = emailAutorized });
-            var permission = JsonSerializer.Serialize(permissions);
+            var permission = JsonSerializer.Serialize(permissions.Select(x => x.Nome).ToList());
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.Role, roleDescription),
                 new Claim("user", user),
-                new Claim("role", roleJson),
+                new Claim("roleJson", roleJson),
                 new Claim("permissions", permission)
             };
 

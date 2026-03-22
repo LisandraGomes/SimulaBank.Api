@@ -7,7 +7,6 @@ namespace SimulaBank.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class BankController : ControllerBase
     {
         private readonly IBankApplication _bankApplication;
@@ -15,17 +14,21 @@ namespace SimulaBank.API.Controllers
         {
             _bankApplication = bankApplication;
         }
+
         [HttpPost("Create")]
         [Authorize(Roles = "InvetstorCliente")]
-        public async Task<IActionResult> CreateBankBox(PiggyBoxRegisterInput request)
+        public async Task<IActionResult> CreatePiggy(PiggyRegisterInput request)
         {
-            //var result = await _bankApplication.CreateBankBox(request);
+            var cpf = User.Claims.FirstOrDefault(c => c.Type == "cpf")?.Value;
+            var result = await _bankApplication.CreatePiggy(request, cpf);
             return Ok();
         }
 
         [HttpGet("/User/{id}")]
-        public async Task<IActionResult> GetBankBox([FromRoute] Guid id)
+        [Authorize(Roles = "InvetstorCliente")]
+        public async Task<IActionResult> GetPiggysByUserId([FromRoute] Guid id)
         {
+            var result = await _bankApplication.GetAllPiggyByUserId(id);
             return Ok();
         }
 

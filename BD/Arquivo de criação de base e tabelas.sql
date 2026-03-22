@@ -57,6 +57,8 @@ CREATE TABLE Permission (
 INSERT INTO [Permission] (PermissionName, [Description], RoleId) VALUES('little_box', 'Acesso a realizar caixinhas proprias.',2),
 ('information_user','Acesso as informações do usuários na tela.',2);
 
+GRANT SELECT ON [Permission] TO app_apicore;
+
 CREATE TABLE UserPermissions (
     Id UNIQUEIDENTIFIER NOT NULL 
         CONSTRAINT PK_Permission PRIMARY KEY 
@@ -69,10 +71,13 @@ CREATE TABLE UserPermissions (
         REFERENCES [User](Id)
 );
 
-CREATE TABLE PiggyBox (
+GRANT SELECT ON [UserPermissions] TO app_apicore;
+
+
+CREATE TABLE Piggy (
     Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
     [Title] NVARCHAR(200) NOT NULL,
-    DESCRIPTION NVARCHAR(2000) NULL,
+    [DESCRIPTION] NVARCHAR(2000) NULL,
     GoalValue DECIMAL NULL,
     CurrenteValue DECIMAL NOT NULL DEFAULT 0,
     [Status] INT NOT NULL,
@@ -83,8 +88,11 @@ CREATE TABLE PiggyBox (
     ActiveAutoDeduct BIT NOT NULL DEFAULT 0,
     Active BIT NOT NULL DEFAULT 1,
     UserId UNIQUEIDENTIFIER NOT NULL,
-    CONSTRAINT FK_UserId_LittlePiggy FOREIGN KEY (UserId) REFERENCES[User](Id)
+    CONSTRAINT FK_UserId_Piggy FOREIGN KEY (UserId) REFERENCES [User](Id),
+    CONSTRAINT FK_Status_Piggy FOREIGN KEY ([Status]) REFERENCES [Status](Id)
 );
+
+GRANT SELECT ON [Piggy] TO app_apicore;
 
 CREATE TABLE History_Piggy (
      Id INT NOT NULL IDENTITY(1,1) CONSTRAINT PK_History_Piggy PRIMARY KEY,
@@ -92,5 +100,15 @@ CREATE TABLE History_Piggy (
      [CurrenteValue] DECIMAL NOT NULL,
      ValueTransaction DECIMAL NOT NULL,
      TransactionDate DATETIME2 NOT NULL,
-     PiggyBoxId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_History_Piggy_PiggyBoxId FOREIGN KEY (PiggyBoxId) REFERENCES [PiggyBox](Id) 
+     PiggyId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_History_Piggy_Piggy FOREIGN KEY (PiggyId) REFERENCES [Piggy](Id) 
 );
+
+GRANT SELECT ON [History_Piggy] TO app_apicore;
+
+CREATE TABLE [Status] (
+    Id INT NOT NULL CONSTRAINT PK_Status_Id PRIMARY KEY,
+    [Description] NVARCHAR(500) NOT NULL,
+    Active BIT NOT NULL DEFAULT 1
+);
+INSERT INTO [STATUS](Id, [Description]) VALUES(1, 'Em progresso'),
+(2, 'Concluído'), (3,'Cancelado'), (4, 'Pausado');

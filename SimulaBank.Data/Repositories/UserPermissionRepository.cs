@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using SimulaBank.Domain.Entities;
 using SimulaBank.Domain.Interfaces.Repositories;
 
@@ -8,9 +9,9 @@ namespace SimulaBank.Data.Repositories
     public class UserPermissionRepository : IUserPermissionRepository
     {
         private readonly string _connectionString;
-        public UserPermissionRepository(string connectionString)
+        public UserPermissionRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
         public async Task<List<Permission>> GetPermissions(Guid userId)
         {
@@ -22,7 +23,6 @@ namespace SimulaBank.Data.Repositories
                 var result = connection.QueryAsync<Permission>(sql, new { UserId = userId });
                 return result.Result.ToList();
             }
-
         }
     }
 }

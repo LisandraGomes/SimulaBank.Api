@@ -1,3 +1,4 @@
+using Microsoft.OpenApi.Models;
 using SimulaBank.Application.DependencyInjection;
 using SimulaBank.Infrastructure.Configuration;
 
@@ -16,6 +17,31 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "API que irá simular o core de operações bancárias, como cofrinhos, transações, e entre outros."
     });
+    // Configuração de segurança para JWT
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Insira o token JWT no campo abaixo, deverá ser um bearer token.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
 });
 
 var app = builder.Build();
@@ -31,6 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -9,9 +9,9 @@ namespace SimulaBank.Data.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly string _connectionString;
-        public UserRepository(IConfiguration config)
+        public UserRepository(IConfiguration configuration)
         {
-            _connectionString = config.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
         public async Task<IEnumerable<User>> GetUserById(Guid id)
@@ -34,7 +34,7 @@ namespace SimulaBank.Data.Repositories
                                 RegistrationDate, 
                                 EmailAthorization, 
                                 IdRole,
-                                r.Description AS RoleDescription
+                                r.RoleName AS RoleName
                          FROM [User] u
                          INNER JOIN [Role] r ON u.IdRole = r.Id
                          WHERE 
@@ -46,7 +46,6 @@ namespace SimulaBank.Data.Repositories
                 connection.Open();
                 return await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email, Cpf = cpf });
             }
-
         }
 
         public async Task<bool> CheckThePassword(string cpf, string passwordHash)
