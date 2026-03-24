@@ -73,7 +73,6 @@ CREATE TABLE UserPermissions (
 
 GRANT SELECT ON [UserPermissions] TO app_apicore;
 
-
 CREATE TABLE Piggy (
     Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
     [Title] NVARCHAR(200) NOT NULL,
@@ -88,22 +87,25 @@ CREATE TABLE Piggy (
     ActiveAutoDeduct BIT NOT NULL DEFAULT 0,
     Active BIT NOT NULL DEFAULT 1,
     UserId UNIQUEIDENTIFIER NOT NULL,
+    
     CONSTRAINT FK_UserId_Piggy FOREIGN KEY (UserId) REFERENCES [User](Id),
     CONSTRAINT FK_Status_Piggy FOREIGN KEY ([Status]) REFERENCES [Status](Id)
 );
 
-GRANT SELECT ON [Piggy] TO app_apicore;
+GRANT SELECT, INSERT, UPDATE ON [Piggy] TO app_apicore;
 
-CREATE TABLE History_Piggy (
+CREATE TABLE HistoryPiggy (
      Id INT NOT NULL IDENTITY(1,1) CONSTRAINT PK_History_Piggy PRIMARY KEY,
      CreateDate DATETIME2 NOT NULL,
      [CurrenteValue] DECIMAL NOT NULL,
      ValueTransaction DECIMAL NOT NULL,
      TransactionDate DATETIME2 NOT NULL,
+     UserCreate NVARCHAR(100) NOT NULL,
+     TypeHistoryId int NOT NULL CONSTRAINT FK_Hitory_Piggy_Type FOREIGN KEY (TypeHistoryId) REFERENCES [HistoryType](Id),
      PiggyId UNIQUEIDENTIFIER NOT NULL CONSTRAINT FK_History_Piggy_Piggy FOREIGN KEY (PiggyId) REFERENCES [Piggy](Id) 
 );
 
-GRANT SELECT ON [History_Piggy] TO app_apicore;
+GRANT SELECT, INSERT ON [History_Piggy] TO app_apicore;
 
 CREATE TABLE [Status] (
     Id INT NOT NULL CONSTRAINT PK_Status_Id PRIMARY KEY,
@@ -112,3 +114,56 @@ CREATE TABLE [Status] (
 );
 INSERT INTO [STATUS](Id, [Description]) VALUES(1, 'Em progresso'),
 (2, 'Concluído'), (3,'Cancelado'), (4, 'Pausado');
+
+CREATE TABLE HistoryType (
+    Id INT NOT NULL IDENTITY(1,1) CONSTRAINT PK_History_Type PRIMARY KEY,
+    [DESCRIPTION] NVARCHAR(500) NOT NULL,
+    [Name] NVARCHAR(150) NOT NULL,
+    CreateDate DATETIME2 NOT NULL,
+    UserCreate NVARCHAR(100) NOT NULL,
+    UpdateDate DATETIME2 NULL,
+    UserUpdate NVARCHAR(100) NULL
+);
+
+INSERT INTO HistoryType([DESCRIPTION], [Name], CreateDate, UserCreate)
+VALUES('Foi criado por {0} - Por: {1}','Criação', GETDATE(), 'System'),
+('A meta foi atualizada por {0} para {1} - Por: {2}', 'Atualização da Meta', GETDATE(), 'System'),
+('Foi alterado o nome de {0} para  {1} - Por: {2}', 'Alteração do Nome', GETDATE(), 'System'),
+('Depósito realizado: {0} , está mais perto da sua meta! - Por: {1}','Depósito', GETDATE(), 'System'),
+('Retirada realizada: {0} - Por: {1}','Retirada', GETDATE(), 'System'),
+('Parabéns você Alcançou sua meta! - Por: {1}','Meta Alcançada', GETDATE(), 'System'),
+('Seu valor rendeu: {0}','Rendimentos', GETDATE(), 'System'),
+('Cofrinho excluido por {0}', 'Exclusão', GETDATE(), 'System');
+
+CREATE TABLE [Transaction] (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+    [Value] DECIMAL NOT NULL,
+    TypeId INT NOT NULL CONSTRAINT FK_Transaction_TypeId FOREIGN KEY (TypeId) REFERENCES [TransactionType](Id),
+    IdAccountOrigin NVARCHAR(500) NULL, 
+    IdAccountDestination NVARCHAR(500) NULL,
+    DateCreate DATETIME2 NOT NULL,
+    DateFinally DATETIME2 NOT NULL,
+    IdUser UNIQUEIDENTIFIER NOT NULL FOREIGN KEY (IdUser) REFERENCES [User](Id),
+    Active BIT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE TransactionType (
+    Id INT NOT NULL CONSTRAINT PK_Transaction_Type PRIMARY KEY,
+    [Name] NVARCHAR(200) NOT NULL,
+    [Active] BIT NOT NULL DEFAULT 1
+);
+
+INSERT INTO TransactionType (Id, [Name], [Active]) VALUES
+(1, 'Depósito',1),
+(2, 'Saque', 1),
+(3, 'Transferência', 1);
+
+CREATE TABLE [Account] (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+    UserId UNIQUEIDENTIFIER NOT NULL,
+    AccountNumber NVARCHAR(50) NOT NULL,
+    Balance DECIMAL(18,2) NOT NULL DEFAULT 0,
+    DateCreate DATETIME2 NOT NULL DEFAULT GETDATE(),
+    Active BIT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_Account_User FOREIGN KEY (UserId) REFERENCES [User](Id)
+);

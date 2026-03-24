@@ -20,6 +20,7 @@ namespace SimulaBank.Application.DependencyInjection
             services.AddScoped<IAuthApplication, AuthApplication>();
             services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IBankApplication, BankApplication>();
+            services.AddScoped<ITransactionApplication, TransactionApplication>();
 
             services.AddServices();
             services.AddAutoMapper();
@@ -42,6 +43,8 @@ namespace SimulaBank.Application.DependencyInjection
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserPermissionRepository, UserPermissionRepository>();
             services.AddScoped<IPiggyRepository, PiggyRepository>();
+            services.AddScoped<IHistoryPiggyRepository, HistoryPiggyRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services)

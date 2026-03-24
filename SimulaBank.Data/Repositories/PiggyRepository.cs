@@ -13,19 +13,25 @@ namespace SimulaBank.Data.Repositories
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-        public async Task<List<Piggy>> GetAllPiggyByUserId(Guid id)
+        public async Task<List<Piggy>> GetAllByUserId(Guid id, bool onlyActive)
         {
-            var sql = @"SELECT Id, [Title], [Description], GoalValue, CurrentValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId FROM [Piggy] WHERE UserId = @Id ;";
+            var sql = @"SELECT Id, [Title], [Description], GoalValue, CurrenteValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId
+                        FROM [Piggy] WHERE UserId = @Id ";
+            
+            if(onlyActive)
+            {
+                sql += " AND Active = @Active";
+            }
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var result = await connection.QueryAsync<Piggy>(sql, new { Id = id });
+                var result = await connection.QueryAsync<Piggy>(sql, new { Id = id, Active = onlyActive });
                 return result.ToList();
             }
         }
-        public async Task<Piggy> GetPiggyById(Guid id)
+        public async Task<Piggy> GetById(Guid id)
         {
-            var sql = @"SELECT Id, [Title], [Description], GoalValue, CurrentValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId FROM [Piggy] WHERE Id = @Id";
+            var sql = @"SELECT Id, [Title], [Description], GoalValue, CurrenteValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId FROM [Piggy] WHERE Id = @Id";
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -33,12 +39,14 @@ namespace SimulaBank.Data.Repositories
                 return result;
             }
         }
-        public async Task CreatePiggy(string title, string description, decimal currentValue, int status, DateTime createDate, DateTime dueDate, int dayAutoDeduct, decimal valueAutoDeduct, bool ActiveAutoDeduct, bool active, Guid userId)
+        public async Task<Guid> Create(string title, string description, decimal currentValue, int status, DateTime createDate, DateTime dueDate, int dayAutoDeduct, decimal valueAutoDeduct, bool ActiveAutoDeduct, bool active, Guid userId)
         {
+
             var sql = @"INSERT INTO
-                        [Piggy] ([Title], [Description], GoalValue, CurrentValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId)
+                        [Piggy] ([Title], [Description], GoalValue, CurrenteValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId)
+                        OUTPUT INSERTED.Id                        
                         VALUES (@Title, @Description, @GoalValue, @CurrentValue, @Status, @CreateDate, @DueDate, @DayAutoDeductValueAccount, @ActiveAutoDeduct, @ValueAutoDeductValueAccount, @Active, @UserId)";
-            
+
             var parameters = new
             {
                 Title = title,
@@ -57,8 +65,22 @@ namespace SimulaBank.Data.Repositories
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(sql, parameters);
+                var id = await connection.QuerySingleAsync<Guid>(sql, parameters);
+                return id;
             }
         }
+
+        public async Task Inative(Guid id)
+        {
+            var sql = @"UPDATE [Piggy] SET Active = 0 WHERE Id = @Id";
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.ExecuteAsync(sql, new { Id = id });
+            }
+        }
+
+
+
+
     }
 }

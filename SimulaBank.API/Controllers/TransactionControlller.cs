@@ -8,23 +8,23 @@ namespace SimulaBank.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AutenthicationController : ControllerBase
+    [Authorize]
+    public class TransactionControlller
     {
-        private readonly IAuthApplication _authApplication;
-        public AutenthicationController(IAuthApplication authApplication)
+        private readonly ITransactionApplication _application;
+        public TransactionControlller(ITransactionApplication transactionApplication)
         {
-            _authApplication = authApplication;
+            _application = transactionApplication;
         }
-
-        [AllowAnonymous]
-        [HttpPost()]
+        [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login(AuthUserInput request)
+        public async Task<IActionResult> CreateTransaction([FromBody] TransactionInput request)
         {
-            var result = await _authApplication.Login(request);
+            var result = await _application.Create(request);
             return ActionResultExtension.ToActionResult(result);
         }
     }

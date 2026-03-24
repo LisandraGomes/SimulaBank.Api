@@ -21,6 +21,9 @@
         #endregion
 
         #region Pattern
+        public const string UpdateSuccess = "Atualização realizada com sucesso.";
+        public const string CreateSuccess = "Cadastro realizado com sucesso.";
+        public const string DeleteSuccess = "Exclusão realizada com sucesso.";
         public const string InternalError = "Algo deu errado, tente novamente.";
         #endregion
 

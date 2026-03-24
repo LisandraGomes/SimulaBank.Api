@@ -1,5 +1,7 @@
-@SimulaBank.API_HostAddress = http://localhost:5232/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJJbnZldHN0b3JDbGllbnRlIiwidXNlciI6IntcIkNwZlwiOlwiMDc2MDE0OTk1MDJcIixcIkVtYWlsXCI6XCJsaXNhbmRyYWdvbWVzNTNAZ21haWwuY29tXCIsXCJBdXRob3JpemVkXCI6ZmFsc2V9Iiwicm9sZSI6IntcIklkXCI6XCIyXCIsXCJEZXNjcmlwdGlvblwiOlwiSW52ZXRzdG9yQ2xpZW50ZVwifSIsInBlcm1pc3Npb25zIjoiW10iLCJleHAiOjE3NzQyMDEzNjUsImlzcyI6IlNpbXVsYUJhbmsuQVBJIiwiYXVkIjoiU2ltdWxhQmFuay5BUEkgQ29yZSJ9.38HBbcOYQ4m6d4PZbNPOoz1KIo7clS0V6goF68y1J8
+@SimulaBank.API_HostAddress = https://localhost:5232/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJJbnZldHN0b3JDbGllbnRlIiwidXNlciI6IntcIkNwZlwiOlwiMDc2MDE0OTk1MDJcIixcIkVtYWlsXCI6XCJsaXNhbmRyYWdvbWVzNTNAZ21haWwuY29tXCIsXCJBdXRob3JpemVkXCI6ZmFsc2V9Iiwicm9sZUpzb24iOiJ7XCJJZFwiOlwiMlwiLFwiRGVzY3JpcHRpb25cIjpcIkludmV0c3RvckNsaWVudGVcIn0iLCJwZXJtaXNzaW9ucyI6IltdIiwiZXhwIjoxNzc0MzIwMTk1LCJpc3MiOiJTaW11bGFCYW5rLkFQSSIsImF1ZCI6IlNpbXVsYUJhbmsuQVBJIENvcmUifQ.ZBL3f6IKqf2gngETO0SqsuM_d4A0XZutqezlou0AOFk
+@idUser = d58683c9-4162-4a42-956b-f2426d86b9d8
+@idPiggy = dc551014-6500-4711-bb9b-e433bb909b49
 ###
 
 POST {{SimulaBank.API_HostAddress}}/User/Register
@@ -29,7 +31,7 @@ Content-type: application/json
 }
 
 ###
-
+ 
 POST {{SimulaBank.API_HostAddress}}/Bank/Create
 Accept: application/json
 Content-Type: application/json
@@ -46,6 +48,27 @@ Authorization: Bearer {{token}}
   "dueDate": "2028-03-21T17:53:38.301Z",
   "valueAutoDeductValueAccount": 0,
   "dayAutoDeductValueAccount": 0,
-  "idUser": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  "idUser": "{{idUser}}"
 }
 
+###
+@onlyActive = true
+GET {{SimulaBank.API_HostAddress}}/Bank/User/{{idUser}}/{{onlyActive}}
+Authorization: Bearer {{token}}
+
+###
+
+GET {{SimulaBank.API_HostAddress}}/Bank/{{idPiggy}}
+Authorization: Bearer {{token}}
+
+###
+PUT {{SimulaBank.API_HostAddress}}/Bank/{{idPiggy}}
+Authorization: Bearer {{token}}
+
+###
+
+@idPiggyDelete = dc551014-6500-4711-bb9b-e433bb909b49
+DELETE {{SimulaBank.API_HostAddress}}/Bank/{{idPiggyDelete}}
+Authorization: Bearer {{token}}
+
+###

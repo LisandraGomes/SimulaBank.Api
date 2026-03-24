@@ -12,9 +12,14 @@ namespace SimulaBank.Application.Application
     {
         private readonly IPiggyRepository _piggyRepository;
         private readonly IUserRepository _userRepository;
-        public BankApplication(IPiggyRepository piggyRepository)
+        private readonly IHistoryPiggyRepository _historyPiggyRepository;
+        public BankApplication(IPiggyRepository piggyRepository,
+            IUserRepository userRepository,
+            IHistoryPiggyRepository historyPiggyRepository)
         {
             _piggyRepository = piggyRepository;
+            _userRepository = userRepository;
+            _historyPiggyRepository = historyPiggyRepository;
         }
 
         public async Task<PatternResult> CreatePiggy(PiggyRegisterInput request, string cpf)
@@ -26,34 +31,35 @@ namespace SimulaBank.Application.Application
 
                 if (user.IdRole != (int)EUserTypes.InvetstorClient)
                     return new PatternResult(HttpStatusCode.Unauthorized, ResultMessages.UserUnauthorized);
-
                 else
                 {
                     if (request.MonthOfDeadline > 0)
                         request.DueDate = DateTime.Now.AddMonths((int)request.MonthOfDeadline);
 
                     bool autoDecduct = request.DayAutoDeductValueAccount > 0 && request.ValueAutoDeductValueAccount > 0;
-                    await _piggyRepository.CreatePiggy(request.Title, request.Description, request.CurrentValue, (int)request.Status,
+                    var id = await _piggyRepository.Create(request.Title, request.Description, request.CurrentValue, (int)request.Status,
                         request.CreateDate ?? DateTime.Now, request.DueDate, request.DayAutoDeductValueAccount,
                         request.ValueAutoDeductValueAccount, autoDecduct, true, request.IdUser);
+                    
+                    await _historyPiggyRepository.Create(id.ToString(), (int)ETypeHistoryPiggy.Create, request.CurrentValue, DateTime.Now);
 
-                    return new PatternResult(HttpStatusCode.OK, ResultMessages.UserLogonSuccess);
+                    return new PatternResult(HttpStatusCode.OK, ResultMessages.CreateSuccess);
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return new PatternResult(HttpStatusCode.InternalServerError, ResultMessages.InternalError);
             }
         }
-        public async Task<PatternResult<List<PiggyOutput>>> GetAllPiggyByUserId(Guid userId)
+        public async Task<PatternResult<List<PiggyOutput>>> GetAllPiggyByUserId(Guid userId, bool onlyActive)
         {
             try
             {
-                var piggy = await _piggyRepository.GetAllPiggyByUserId(userId);
-                if (piggy == null)
-                {
+                var piggy = await _piggyRepository.GetAllByUserId(userId, onlyActive);
+                if (piggy == null || piggy.Count <= 0)
                     return new PatternResult<List<PiggyOutput>>(HttpStatusCode.NotFound, ResultMessages.PiggyNotFound);
-                }
+
                 var output = piggy.Select(x => new PiggyOutput
                 {
                     Id = x.Id,
@@ -66,13 +72,71 @@ namespace SimulaBank.Application.Application
                     DueDate = x.DueDate,
                     DayAutoDeductValueAccount = x.DayAutoDeductValueAccount,
                     ValueAutoDeductValueAccount = x.ValueAutoDeductValueAccount,
-                    ActiveAutoDeduct = x.ActiveAutoDeduct
+                    ActiveAutoDeduct = x.ActiveAutoDeduct,
+                    Active = x.Active
                 }).ToList();
                 return new PatternResult<List<PiggyOutput>>(output);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return new PatternResult<List<PiggyOutput>>(HttpStatusCode.InternalServerError, ResultMessages.InternalError);
+            }
+        }
+
+        public async Task<PatternResult<PiggyOutput>> GetBankBoxById(Guid id)
+        {
+            try
+            {
+                var piggy = await _piggyRepository.GetById(id);
+                if (piggy == null)
+                    return new PatternResult<PiggyOutput>(HttpStatusCode.NotFound, ResultMessages.PiggyNotFound);
+                var output = new PiggyOutput
+                {
+                    Id = piggy.Id,
+                    Title = piggy.Title,
+                    Description = piggy.Description,
+                    GoalValue = piggy.GoalValue,
+                    CurrentValue = piggy.CurrentValue,
+                    Status = (EStratusPiggyBank)piggy.Status,
+                    CreateDate = piggy.CreateDate,
+                    DueDate = piggy.DueDate,
+                    DayAutoDeductValueAccount = piggy.DayAutoDeductValueAccount,
+                    ValueAutoDeductValueAccount = piggy.ValueAutoDeductValueAccount,
+                    ActiveAutoDeduct = piggy.ActiveAutoDeduct
+                };
+                return new PatternResult<PiggyOutput>(output);
+            }
+            catch (Exception ex)
+            {
+                return new PatternResult<PiggyOutput>(HttpStatusCode.InternalServerError, ResultMessages.InternalError);
+            }
+        }
+
+        public async Task<PatternResult> DeleteBankBox(Guid id)
+        {
+            try
+            {
+                await _piggyRepository.Inative(id);
+                await _historyPiggyRepository.Create(id.ToString(), (int)ETypeHistoryPiggy.Delete, 0, DateTime.Now);
+                return new PatternResult(HttpStatusCode.OK, ResultMessages.DeleteSuccess);
+            }
+            catch (Exception ex)
+            {
+                return new PatternResult(HttpStatusCode.InternalServerError, ResultMessages.InternalError);
+            }
+        }
+
+        public async Task<PatternResult> UpdateBankBox(Guid id)
+        {
+            try
+            {
+                // Lógica para atualizar a caixa bancária
+                return new PatternResult(HttpStatusCode.OK, ResultMessages.UpdateSuccess);
+            }
+            catch (Exception ex)
+            {
+                return new PatternResult(HttpStatusCode.InternalServerError, ResultMessages.InternalError);
             }
         }
     }
