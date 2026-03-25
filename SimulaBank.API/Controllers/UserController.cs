@@ -27,5 +27,16 @@ namespace SimulaBank.API.Controllers
             var result = await _userApplication.Register(request);
             return ActionResultExtension.ToActionResult(result);
         }
+
+        [AllowAnonymous]
+        [HttpPut("Active")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        public async Task<IActionResult> Active(ActiveUserInput request)
+        {
+            var result = await _userApplication.Active(request);
+            return ActionResultExtension.ToActionResult(result);
+        }
     }
 }

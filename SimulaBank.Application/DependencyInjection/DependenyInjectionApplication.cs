@@ -1,15 +1,12 @@
 ﻿
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using SimulaBank.Application.Application;
 using SimulaBank.Application.Interfaces;
 using SimulaBank.Application.Validators;
 using SimulaBank.Data.Repositories;
 using SimulaBank.Domain.Interfaces.Repositories;
-using SimulaBank.Domain.Interfaces.Services;
 using SimulaBank.Domain.Utils;
-using System.Security;
 
 namespace SimulaBank.Application.DependencyInjection
 {
@@ -37,7 +34,7 @@ namespace SimulaBank.Application.DependencyInjection
             services.AddTransient<VerifyTypeService>();
             return services;
         }
-        
+
         private static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
@@ -45,6 +42,7 @@ namespace SimulaBank.Application.DependencyInjection
             services.AddScoped<IPiggyRepository, PiggyRepository>();
             services.AddScoped<IHistoryPiggyRepository, HistoryPiggyRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services)

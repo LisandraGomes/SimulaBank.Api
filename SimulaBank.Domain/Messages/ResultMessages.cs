@@ -21,6 +21,7 @@
         #endregion
 
         #region Pattern
+        public const string UnprocessableEntity = "Dados informados estão vazios ou não é prossivel processar.";
         public const string UpdateSuccess = "Atualização realizada com sucesso.";
         public const string CreateSuccess = "Cadastro realizado com sucesso.";
         public const string DeleteSuccess = "Exclusão realizada com sucesso.";

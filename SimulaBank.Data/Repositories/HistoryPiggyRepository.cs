@@ -18,16 +18,16 @@ namespace SimulaBank.Data.Repositories
         {
             var sql = @"INSERT INTO HistoryPiggy (PiggyId, TypeHistoryId ,CurrenteValue, ValueTransaction, CreateDate, TransactionDate, UserCreate)
                         VALUES (@IdPiggy, @Type, @Value, @ValueTransaction, @Date, @TransactionDate, @UserCreate)";
-            var parameters = new
-            {
-                IdPiggy = idPiggy,
-                Value = value,
-                Date = DateTime.Now,
-                Type = typeHistory,
-                ValueTransaction = value,
-                TransactionDate = date,
-                UserCreate = string.Empty
-            };
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@IdPiggy", idPiggy);
+            parameters.Add("@Type", typeHistory);
+            parameters.Add("@Value", value);
+            parameters.Add("@ValueTransaction", value);
+            parameters.Add("@Date", DateTime.Now);
+            parameters.Add("@TransactionDate", date);
+            parameters.Add("@UserCreate", string.Empty);
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync(sql, parameters);

@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using SimulaBank.Domain.Entities;
 using SimulaBank.Domain.Interfaces.Repositories;
+using System.Data;
 
 namespace SimulaBank.Data.Repositories
 {
@@ -17,15 +18,18 @@ namespace SimulaBank.Data.Repositories
         {
             var sql = @"SELECT Id, [Title], [Description], GoalValue, CurrenteValue, [Status], CreateDate, DueDate, DayAutoDeductValueAccount, ActiveAutoDeduct, ValueAutoDeductValueAccount, Active, UserId
                         FROM [Piggy] WHERE UserId = @Id ";
-            
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@Id", id, DbType.Guid);
             if(onlyActive)
             {
                 sql += " AND Active = @Active";
+                parameters.Add("@Active", onlyActive, DbType.Boolean);
             }
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                var result = await connection.QueryAsync<Piggy>(sql, new { Id = id, Active = onlyActive });
+                var result = await connection.QueryAsync<Piggy>(sql, parameters);
                 return result.ToList();
             }
         }
@@ -47,21 +51,19 @@ namespace SimulaBank.Data.Repositories
                         OUTPUT INSERTED.Id                        
                         VALUES (@Title, @Description, @GoalValue, @CurrentValue, @Status, @CreateDate, @DueDate, @DayAutoDeductValueAccount, @ActiveAutoDeduct, @ValueAutoDeductValueAccount, @Active, @UserId)";
 
-            var parameters = new
-            {
-                Title = title,
-                Description = description,
-                GoalValue = currentValue,
-                CurrentValue = currentValue,
-                Status = status,
-                CreateDate = createDate,
-                DueDate = dueDate,
-                DayAutoDeductValueAccount = dayAutoDeduct,
-                ActiveAutoDeduct,
-                ValueAutoDeductValueAccount = valueAutoDeduct,
-                Active = active,
-                UserId = userId
-            };
+            var parameters = new DynamicParameters();
+            parameters.Add("@Title", title, DbType.String);
+            parameters.Add("@Description", description, DbType.String);
+            parameters.Add("@GoalValue", currentValue, DbType.Decimal);
+            parameters.Add("@CurrentValue", currentValue, DbType.Decimal);
+            parameters.Add("@Status", status, DbType.Int32);
+            parameters.Add("@CreateDate", createDate, DbType.DateTime);
+            parameters.Add("@DueDate", dueDate, DbType.DateTime);
+            parameters.Add("@DayAutoDeductValueAccount", dayAutoDeduct, DbType.Int32);
+            parameters.Add("@ActiveAutoDeduct", ActiveAutoDeduct, DbType.Boolean);
+            parameters.Add("@ValueAutoDeductValueAccount", valueAutoDeduct, DbType.Decimal);
+            parameters.Add("@Active", active, DbType.Boolean);
+            parameters.Add("@UserId", userId, DbType.Guid);
 
             using (var connection = new SqlConnection(_connectionString))
             {

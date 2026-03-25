@@ -57,12 +57,13 @@ namespace SimulaBank.Data.Repositories
             }
         }
 
-        public async Task InsertUser(string firstName, string midName, string cpf, string email, string passwordHash, DateTime birthDate, int idRole)
+        public async Task<Guid> InsertUser(string firstName, string midName, string cpf, string email, string passwordHash, DateTime birthDate, int idRole)
         {
             try
             {
                 var sql = @"INSERT INTO [User] (FirstName, MidName, Cpf, Email, [Password], BirthDate, RegistrationDate,Active, EmailAthorization, IdRole)
-                        VALUES (@FirstName, @MidName, @Cpf, @Email, @PasswordHash, @BirthDate, @RegistrationDate, 0, 0, @IdRole)";
+                            OUTPUT INSERTED.Id                          
+                            VALUES (@FirstName, @MidName, @Cpf, @Email, @PasswordHash, @BirthDate, @RegistrationDate, 0, 0, @IdRole)";
 
                 var user = new
                 {
@@ -78,7 +79,8 @@ namespace SimulaBank.Data.Repositories
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    await connection.ExecuteAsync(sql, user);
+                    var result = await connection.QuerySingleAsync<Guid>(sql, user);
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -104,5 +106,15 @@ namespace SimulaBank.Data.Repositories
             }
         }
 
+        public async Task<bool> ActiveUser(Guid userId, string email) 
+        {
+            var sql = @"UPDATE [User] SET Active = @Active WHERE Id = @UserId AND Email = @Email";
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var affectedRows = await connection.ExecuteAsync(sql, new { Active = true, UserId = userId, Email = email });
+                return affectedRows > 0;
+            }
+        }
     }
 }
