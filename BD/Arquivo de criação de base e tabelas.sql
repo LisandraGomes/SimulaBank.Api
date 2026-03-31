@@ -176,13 +176,72 @@ GRANT SELECT, INSERT, UPDATE ON [Account] TO app_apicore;
 CREATE TABLE [PatternEmail](
     Id INT NOT NULL UNIQUE,
     [Subject] NVARCHAR(500) NOT NULL,
-    [Body] VARCHAR(MAX) NOT NULL,
+    [Body] TEXT NOT NULL,
     DateCreate DATETIME2 NOT NULL DEFAULT GETDATE()
 );
 GRANT SELECT ON [PatternEmail] TO app_apicore;
 
 INSERT INTO PatternEmail (Id, [Subject], [Body])
-VALUES (1, 'Confirme sua conta','<!DOCTYPE html>\r\n<html lang=\"pt-BR\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <title>Confirmação de Cadastro</title>\r\n</head>\r\n<body style=\"font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;\">\r\n    <div style=\"max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\">\r\n        <h2 style=\"color: #333;\">Confirme seu cadastro</h2>\r\n        <p style=\"color: #555;\">\r\n            Olá {2}, obrigado por se registrar em nosso Banco, esperamos que seja uma boa aventura! \r\n        </p>\r\n\r\n<div style=\"display: flex; justify-content: center; align-items: center; flex-direction: column;\">\r\n<p>\r\nPara ativar sua conta, clique no botão abaixo e confirme seu cadastro.\r\n</p>\r\n\r\n        <a href=\"https://suaaplicacao.com/confirmacao?token={0}&email={1}&accepted=true\"\r\n           style=\"display: inline-block; text-align: center; padding: 12px 24px; background-color: #4CAF50; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;\">\r\n            Confirmar Cadastro\r\n        </a>\r\n\r\n\t<p style=\"margin-top: 20px; color: #777; font-size: 14px;\">\r\n            Se você não realizou este cadastro, pode ignorar este e-mail.\r\n        </p>\r\n</div>\r\n    </div>\r\n</body>\r\n</html>');
+VALUES (1,'Confirme seu cadastro', '<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirme seu cadastro</title>
+    <style>
+        /* Estilos básicos para garantir responsividade */
+        body { margin: 0; padding: 0; background-color: #fafafa; font-family: Arial, sans-serif; }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .content { padding: 40px 20px; text-align: center; }
+        .button { 
+            display: inline-block; 
+            padding: 15px 30px; 
+            background-color: #6aa84f; 
+            color: #ffffff !important; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 18px; 
+        }
+        h1 { color: #333333; font-size: 28px; margin-bottom: 20px; }
+        p { color: #666666; font-size: 16px; line-height: 1.5; margin-bottom: 20px; }
+        .footer { font-size: 12px; color: #999999; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#fafafa">
+        <tr>
+            <td align="center">
+                <table class="container" role="presentation" width="600" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <td class="content" style="padding-bottom: 0;">
+                            <img src="https://ezpwiba.stripocdn.email/content/guids/CABINET_167198e43a75a17fecce46fedce7a4f5e2c11cfe2ba36813b3ece3281207dae5/images/sbsf.png" alt="Logo" width="120" style="display: block; margin: 0 auto;">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="content">
+                            <img src="https://ezpwiba.stripocdn.email/content/guids/CABINET_67e080d830d87c17802bd9b4fe1c0912/images/55191618237638326.png" alt="" width="80" style="margin-bottom: 20px;">
+                            
+                            <h1>Confirme seu cadastro</h1>
+                            
+                            <p>Olá <strong>{0}</strong>, obrigado por se registrar em nosso Banco. Esperamos que seja uma ótima aventura!</p>
+                            
+                            <p>Para ativar sua conta e começar a usar o <strong>SimulaBank</strong>, clique no botão abaixo:</p>
+                            
+                            <div style="margin: 30px 0;">
+                                <a href="https://localhost:4200/confirmacao?token={1}&email={2}&accepted=true" class="button">Confirmar Cadastro</a>
+                            </div>
+                            
+                            <p class="footer">Se você não realizou este cadastro, pode ignorar este e-mail com segurança.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>');
 
 CREATE TABLE [HistoryEmails]
 (

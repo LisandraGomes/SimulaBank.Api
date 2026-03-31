@@ -76,7 +76,7 @@ namespace SimulaBank.Application.Application
             {
                 var user = await _userRepository.GetUserById(userId);
                 var patternEmail = await _patternEmailRepository.GetById((int)EEmailPattern.Confirmation);
-                var body = patternEmail.Body.Replace("{0}", userId.ToString()).Replace("{1}", user.Email).Replace("{2}", user.Name);
+                var body = patternEmail.Body.Replace("{0}", user.Name.ToString()).Replace("{1}", user.Id.ToString()).Replace("{2}", user.Email);
                 await _emailService.SendEmailAsync(user.Email, patternEmail.Subject, body);
 
                 await _historyEmailsRepository.Create(user.Email, (int)EEmailPattern.Confirmation, true, DateTime.Now);

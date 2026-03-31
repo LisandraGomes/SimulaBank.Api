@@ -28,9 +28,16 @@ namespace SimulaBank.Infrastructure.Services
             {
                 var @from = (_smtpClient.Credentials as NetworkCredential)?.UserName
                        ?? throw new InvalidOperationException("SMTP credentials não configuradas corretamente.");
+                var mail = new MailMessage
+                {
+                    From = new MailAddress(from, "Simula Bank"),
+                    Subject = subject,
+                    IsBodyHtml = true,
+                    Body = body
+                };
+                mail.To.Add(to);
 
-                using var mailMessage = new MailMessage(from, to, subject, body);
-                await _smtpClient.SendMailAsync(mailMessage);
+                await _smtpClient.SendMailAsync(mail);
             }
             catch(Exception ex)
             {
