@@ -14,6 +14,8 @@ namespace SimulaBank.Infrastructure.Configuration
         public static IServiceCollection AddInfraestructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAuthServices, AuthServices>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IUnitOfWork>(provider => new UnitOfWork(configuration.GetConnectionString("DefaultConnection")));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.Events = new JwtBearerEvents

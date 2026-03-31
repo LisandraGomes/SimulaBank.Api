@@ -3,16 +3,17 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using SimulaBank.Domain.Entities;
 using SimulaBank.Domain.Interfaces.Repositories;
+using SimulaBank.Domain.Interfaces.Services;
 using System.Data;
 
 namespace SimulaBank.Data.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly string _connectionString;
-        public AccountRepository(IConfiguration configuration)
+        private IUnitOfWork _unitOfWork;
+        public AccountRepository(IUnitOfWork unitOfWork)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Create(Guid userId, int number, decimal balance, DateTime dateCreate, bool active)
@@ -28,22 +29,40 @@ namespace SimulaBank.Data.Repositories
             parameters.Add("@DateCreate", dateCreate, DbType.DateTime);
             parameters.Add("@Active", active, DbType.Boolean);
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                return await connection.QuerySingleAsync<Guid>(sql, parameters);
-            }
+            return await _unitOfWork.Connection.QuerySingleAsync<Guid>(sql, parameters, _unitOfWork.Transaction);
         }
 
-        public async Task<Account> GetByUserId(Guid UserId) {
+        public async Task<Account> GetByUserId(Guid userId) {
             var sql = @"SELECT Id, AccountNumber, Balance,DateCreate, Active FROM [Account] WHERE UserId = @UserId";
+            return await _unitOfWork.Connection.QueryFirstOrDefaultAsync<Account>(sql, new {UserId = userId}, _unitOfWork.Transaction);  
+        }
 
-            using (var connection = new SqlConnection(_connectionString))
+        public async Task<decimal> AddValueTransaction(decimal value, Guid idAccount)
+        {
+            try
             {
-                await connection.OpenAsync();
-                return await connection.QueryFirstOrDefaultAsync<Account>(sql, new { UserId = UserId });
+                var parameters = new DynamicParameters();
+                decimal balance = 0;
+                var select = @"SELECT Balance FROM [Account] WHERE Id = @Id";
+                parameters.Add("@Id", idAccount, DbType.Decimal);
+
+                balance = await _unitOfWork.Connection.QuerySingleOrDefaultAsync<decimal>(select, parameters, _unitOfWork.Transaction);
+
+                if (balance > 0)
+                {
+                    balance = decimal.Add(balance, value);
+                    var update = @"UPDATE [Account] SET Balance = @Balance WHERE Id = @Id";
+                    parameters.Add("@Balance", balance);
+
+                    await _unitOfWork.Connection.ExecuteAsync(update, parameters, _unitOfWork.Transaction);
+                }
+                _unitOfWork.Commit();
+                return balance;
             }
-            
+            catch (Exception ex) { 
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
     }

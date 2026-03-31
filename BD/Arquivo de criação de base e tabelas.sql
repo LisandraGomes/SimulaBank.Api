@@ -114,6 +114,7 @@ CREATE TABLE [Status] (
 );
 INSERT INTO [STATUS](Id, [Description]) VALUES(1, 'Em progresso'),
 (2, 'Concluído'), (3,'Cancelado'), (4, 'Pausado');
+GRANT SELECT ON [Status] TO app_apicore;
 
 CREATE TABLE HistoryType (
     Id INT NOT NULL IDENTITY(1,1) CONSTRAINT PK_History_Type PRIMARY KEY,
@@ -124,6 +125,7 @@ CREATE TABLE HistoryType (
     UpdateDate DATETIME2 NULL,
     UserUpdate NVARCHAR(100) NULL
 );
+GRANT SELECT ON [HistoryPiggy] TO app_apicore;
 
 INSERT INTO HistoryType([DESCRIPTION], [Name], CreateDate, UserCreate)
 VALUES('Foi criado por {0} - Por: {1}','Criação', GETDATE(), 'System'),
@@ -146,12 +148,14 @@ CREATE TABLE [Transaction] (
     IdUser UNIQUEIDENTIFIER NOT NULL FOREIGN KEY (IdUser) REFERENCES [User](Id),
     Active BIT NOT NULL DEFAULT 1
 );
+GRANT SELECT, INSERT, UPDATE ON [Transaction] TO app_apicore;
 
 CREATE TABLE TransactionType (
     Id INT NOT NULL CONSTRAINT PK_Transaction_Type PRIMARY KEY,
     [Name] NVARCHAR(200) NOT NULL,
     [Active] BIT NOT NULL DEFAULT 1
 );
+GRANT SELECT ON [TransactionType] TO app_apicore;
 
 INSERT INTO TransactionType (Id, [Name], [Active]) VALUES
 (1, 'Depósito',1),
@@ -167,3 +171,27 @@ CREATE TABLE [Account] (
     Active BIT NOT NULL DEFAULT 1,
     CONSTRAINT FK_Account_User FOREIGN KEY (UserId) REFERENCES [User](Id)
 );
+GRANT SELECT, INSERT, UPDATE ON [Account] TO app_apicore;
+
+CREATE TABLE [PatternEmail](
+    Id INT NOT NULL UNIQUE,
+    [Subject] NVARCHAR(500) NOT NULL,
+    [Body] VARCHAR(MAX) NOT NULL,
+    DateCreate DATETIME2 NOT NULL DEFAULT GETDATE()
+);
+GRANT SELECT ON [PatternEmail] TO app_apicore;
+
+INSERT INTO PatternEmail (Id, [Subject], [Body])
+VALUES (1, 'Confirme sua conta','<!DOCTYPE html>\r\n<html lang=\"pt-BR\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <title>Confirmação de Cadastro</title>\r\n</head>\r\n<body style=\"font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;\">\r\n    <div style=\"max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\">\r\n        <h2 style=\"color: #333;\">Confirme seu cadastro</h2>\r\n        <p style=\"color: #555;\">\r\n            Olá {2}, obrigado por se registrar em nosso Banco, esperamos que seja uma boa aventura! \r\n        </p>\r\n\r\n<div style=\"display: flex; justify-content: center; align-items: center; flex-direction: column;\">\r\n<p>\r\nPara ativar sua conta, clique no botão abaixo e confirme seu cadastro.\r\n</p>\r\n\r\n        <a href=\"https://suaaplicacao.com/confirmacao?token={0}&email={1}&accepted=true\"\r\n           style=\"display: inline-block; text-align: center; padding: 12px 24px; background-color: #4CAF50; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;\">\r\n            Confirmar Cadastro\r\n        </a>\r\n\r\n\t<p style=\"margin-top: 20px; color: #777; font-size: 14px;\">\r\n            Se você não realizou este cadastro, pode ignorar este e-mail.\r\n        </p>\r\n</div>\r\n    </div>\r\n</body>\r\n</html>');
+
+CREATE TABLE [HistoryEmails]
+(
+    Id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    EmailUser NVARCHAR(500) NOT NULL,
+    PatternEmailId INT NOT NULL CONSTRAINT FK_PatternEmailId FOREIGN KEY (PatternEmailId) REFERENCES [PatternEmail](Id),
+    [Send] BIT NOT NULL DEFAULT 0,
+    [DateCreate] DateTime2 NOT NULL DEFAULT GETDATE(),
+    [DateSend] DATETIME2 NULL,
+    Click BIT NOT NULL DEFAULT 0
+);
+GRANT SELECT, INSERT, UPDATE ON [HistoryEmails] TO app_apicore;

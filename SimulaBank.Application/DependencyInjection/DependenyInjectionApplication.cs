@@ -1,11 +1,12 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimulaBank.Application.Application;
 using SimulaBank.Application.Interfaces;
 using SimulaBank.Application.Validators;
 using SimulaBank.Data.Repositories;
+using SimulaBank.Domain.DomainServices;
 using SimulaBank.Domain.Interfaces.Repositories;
+using SimulaBank.Domain.Interfaces.Services;
 using SimulaBank.Domain.Utils;
 
 namespace SimulaBank.Application.DependencyInjection
@@ -15,9 +16,9 @@ namespace SimulaBank.Application.DependencyInjection
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IAuthApplication, AuthApplication>();
-            services.AddScoped<IUserApplication, UserApplication>();
             services.AddScoped<IBankApplication, BankApplication>();
             services.AddScoped<ITransactionApplication, TransactionApplication>();
+            services.AddScoped<IUserApplication, UserApplication>();
 
             services.AddServices();
             services.AddAutoMapper();
@@ -29,7 +30,7 @@ namespace SimulaBank.Application.DependencyInjection
         {
             //services.AddFluentValidationAutoValidation();
             //services.AddValidatorsFromAssemblyContaining<LoginAuthValidators>();
-
+            services.AddTransient<IAccountDomainService, AccountDomainService>();
             services.AddTransient<LoginAuthValidators>();
             services.AddTransient<VerifyTypeService>();
             return services;
@@ -43,6 +44,8 @@ namespace SimulaBank.Application.DependencyInjection
             services.AddScoped<IHistoryPiggyRepository, HistoryPiggyRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IPatternEmailRepository, PatternEmailRepository>();
+            services.AddScoped<IHistoryEmailsRepository, HistoryEmailsRepository>();
             return services;
         }
         private static IServiceCollection AddAutoMapper(this IServiceCollection services)

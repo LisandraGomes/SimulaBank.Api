@@ -1,17 +1,16 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using SimulaBank.Domain.Entities;
 using SimulaBank.Domain.Interfaces.Repositories;
+using SimulaBank.Domain.Interfaces.Services;
 
 namespace SimulaBank.Data.Repositories
 {
     public class HistoryPiggyRepository : IHistoryPiggyRepository
     {
-        private readonly string _connectionString;
-        public HistoryPiggyRepository(IConfiguration configuration)
+        private readonly IUnitOfWork _unitOfWork;
+        public HistoryPiggyRepository(IUnitOfWork unit)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _unitOfWork = unit;
         }
 
         public async Task Create(string idPiggy, int typeHistory, decimal value, DateTime date)
@@ -28,20 +27,16 @@ namespace SimulaBank.Data.Repositories
             parameters.Add("@TransactionDate", date);
             parameters.Add("@UserCreate", string.Empty);
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.ExecuteAsync(sql, parameters);
-            }
+            await _unitOfWork.Connection.ExecuteAsync(sql, parameters, transaction: _unitOfWork.Transaction);
+
         }
 
         public async Task<List<HistoryPiggy>> GetAllByPiggyId(Guid piggyId)
         {
             var sql = @"SELECT Id, PiggyId, TypeHisotryId ,CurrenteValue, ValueTransaction, CreateDate, TransactionDate, UserCreate FROM HistoryPiggy WHERE PiggyId = @PiggyId";
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                var result = await connection.QueryAsync<HistoryPiggy>(sql, new { PiggyId = piggyId });
-                return result.ToList();
-            }
+
+            var result = await _unitOfWork.Connection.QueryAsync<HistoryPiggy>(sql, new { PiggyId = piggyId }, transaction: _unitOfWork.Transaction);
+            return result.ToList();
         }
 
 

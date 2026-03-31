@@ -4,15 +4,16 @@ using Microsoft.Extensions.Configuration;
 using SimulaBank.Domain.Entities;
 using SimulaBank.Domain.Enum;
 using SimulaBank.Domain.Interfaces.Repositories;
+using SimulaBank.Domain.Interfaces.Services;
 
 namespace SimulaBank.Data.Repositories
 {
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly string _connectionString;
-        public TransactionRepository(IConfiguration configuration)
+        private readonly IUnitOfWork _unitOfWork;
+        public TransactionRepository(IUnitOfWork unitOfWork)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> CreateTransaction(decimal value, ETypeTransaction typeTransaction, DateTime? dateFinally, string? idAccountOrigin, string? idAccountDestination)
@@ -21,32 +22,27 @@ namespace SimulaBank.Data.Repositories
                         (@Value, @TypeTransaction, @IdAccountOrigin, @IdAccountDestination, @Date, @DateFinally, @Active );
                         SELECT SCOPE_IDENTITY();";
 
-            using (var connection = new SqlConnection(_connectionString))
+
+            _unitOfWork.BeginTransaction();
+            try
             {
-                await connection.OpenAsync();
-                using (var transaction = connection.BeginTransaction())
+                var idTransaction = await _unitOfWork.Connection.ExecuteScalarAsync<Guid>(sql, new
                 {
-                    try
-                    {
-                        var idTransaction = await connection.ExecuteScalarAsync<Guid>(sql, new
-                        {
-                            Value = value,
-                            TypeTransaction = typeTransaction,
-                            IdAccountOrigin = idAccountOrigin,
-                            IdAccountDestination = idAccountDestination,
-                            Date = DateTime.UtcNow,
-                            DateFinally = dateFinally,
-                            Active = true
-                        }, transaction);
-                        transaction.Commit();
-                        return idTransaction;
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
+                    Value = value,
+                    TypeTransaction = typeTransaction,
+                    IdAccountOrigin = idAccountOrigin,
+                    IdAccountDestination = idAccountDestination,
+                    Date = DateTime.UtcNow,
+                    DateFinally = dateFinally,
+                    Active = true
+                }, transaction: _unitOfWork.Transaction);
+                _unitOfWork.Commit();
+                return idTransaction;
+            }
+            catch
+            {
+                _unitOfWork.Rollback();
+                throw;
             }
         }
 
@@ -55,29 +51,19 @@ namespace SimulaBank.Data.Repositories
             var sql = @"UPDATE [Transaction]
                         SET DateFinally = @DateFinally
                         WHERE Id = @Id";
-            using (var connection = new SqlConnection(_connectionString))
+
+
+
+            var rowsAffected = await _unitOfWork.Connection.ExecuteAsync(sql, new
             {
-                await connection.OpenAsync();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        var rowsAffected = await connection.ExecuteAsync(sql, new
-                        {
-                            Id = idTransaction,
-                            DateFinally = dateFinally
-                        }, transaction);
-                        transaction.Commit();
-                        return rowsAffected > 0;
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
+                Id = idTransaction,
+                DateFinally = dateFinally
+            }, transaction: _unitOfWork.Transaction);
+            _unitOfWork.Commit();
+            return rowsAffected > 0;
+
         }
+
 
         public async Task<List<Transaction>> GetAllTransactionByUser(Guid idUser)
         {
@@ -85,14 +71,10 @@ namespace SimulaBank.Data.Repositories
                         FROM [Transaction] t
                         INNER JOIN Account a ON (t.IdAccountOrigin = a.Id OR t.IdAccountDestination = a.Id)
                         WHERE a.IdUser = @IdUser AND t";
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-                var transactions = await connection.QueryAsync<Transaction>(sql, new { IdUser = idUser });
-                return transactions.ToList();
-            }
+
+            var transactions = await _unitOfWork.Connection.QueryAsync<Transaction>(sql, new { IdUser = idUser }, transaction: _unitOfWork.Transaction);
+            return transactions.ToList();
         }
-
-
     }
+
 }

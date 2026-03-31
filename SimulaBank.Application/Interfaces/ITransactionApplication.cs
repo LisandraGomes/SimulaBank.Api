@@ -6,5 +6,6 @@ namespace SimulaBank.Application.Interfaces
     public interface ITransactionApplication
     {
         Task<PatternResult<TransactionOutput>> Create(TransactionInput input);
+        Task<PatternResult<List<TransactionOutput>>> GetByUser(Guid idUser);
     }
 }

@@ -6,5 +6,6 @@ namespace SimulaBank.Domain.Interfaces.Repositories
     {
         Task<Account> GetByUserId(Guid userId);
         Task<Guid> Create(Guid userId, int number, decimal balance, DateTime dateCreate, bool active);
+        Task<decimal> AddValueTransaction(decimal value, Guid idAccount);
     }
 }

@@ -17,6 +17,7 @@ namespace SimulaBank.Domain.Entities
         public bool EmailAthorization { get; set; }
         public int IdRole { get; set; }
         public string RoleName { get; set; }
+        public Guid IdAccount { get; set; }
 
         public User()
         {

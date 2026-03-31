@@ -47,9 +47,11 @@ namespace SimulaBank.Application.Application
             if (isPasswordValid)
             {
                token = _authServices.GenerateToken(user.Email, user.Cpf, user.EmailAthorization, user.IdRole.ToString(), user.RoleName, permissions);
+               return new PatternResult<AuthOutput>(new AuthOutput { Token = token });
             }
+            else
+                return new PatternResult<AuthOutput>(HttpStatusCode.NotFound, ResultMessages.UserNotFound);
 
-            return new PatternResult<AuthOutput>(new AuthOutput { Token = token });
         }
     }
 }

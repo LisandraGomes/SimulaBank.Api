@@ -1,16 +1,16 @@
 @SimulaBank.API_HostAddress = https://localhost:5232/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJJbnZldHN0b3JDbGllbnRlIiwidXNlciI6IntcIkNwZlwiOlwiMDc2MDE0OTk1MDJcIixcIkVtYWlsXCI6XCJsaXNhbmRyYWdvbWVzNTNAZ21haWwuY29tXCIsXCJBdXRob3JpemVkXCI6ZmFsc2V9Iiwicm9sZUpzb24iOiJ7XCJJZFwiOlwiMlwiLFwiRGVzY3JpcHRpb25cIjpcIkludmV0c3RvckNsaWVudGVcIn0iLCJwZXJtaXNzaW9ucyI6IltdIiwiZXhwIjoxNzc0MzIwMTk1LCJpc3MiOiJTaW11bGFCYW5rLkFQSSIsImF1ZCI6IlNpbXVsYUJhbmsuQVBJIENvcmUifQ.ZBL3f6IKqf2gngETO0SqsuM_d4A0XZutqezlou0AOFk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJJbnZldHN0b3JDbGllbnRlIiwidXNlciI6IntcIkNwZlwiOlwiMDc2MDE0OTk1MDJcIixcIkVtYWlsXCI6XCJsaXNhbmRyYWdvbWVzNTNAZ21haWwuY29tXCIsXCJBdXRob3JpemVkXCI6ZmFsc2V9Iiwicm9sZUpzb24iOiJ7XCJJZFwiOlwiMlwiLFwiRGVzY3JpcHRpb25cIjpcIkludmV0c3RvckNsaWVudGVcIn0iLCJwZXJtaXNzaW9ucyI6IltdIiwiZXhwIjoxNzc0NTQxODcyLCJpc3MiOiJTaW11bGFCYW5rLkFQSSIsImF1ZCI6IlNpbXVsYUJhbmsuQVBJIENvcmUifQ.8N28fREMGNUgybsTV7hKEsmn60VkLr1Ii4T2F5eTWjE
 @idUser = d58683c9-4162-4a42-956b-f2426d86b9d8
 @idPiggy = dc551014-6500-4711-bb9b-e433bb909b49
 ###
-
+//User
 POST {{SimulaBank.API_HostAddress}}/User/Register
 Accept: application/json
 Content-Type: application/json
 {
   "name": "Lisandra",
   "midName": "Bomfim",
-  "email": "lisandragomes53@gmail.com",
+  "email": "lisandragomes53@gmail.com", 
   "cpf": "07601499502",
   "birthDate": "23/07/2000",
   "password": "simula@bank",
@@ -20,6 +20,17 @@ Content-Type: application/json
 
 ###
 
+PUT {{SimulaBank.API_HostAddress}}/User/Active
+Accept: application/json
+Content-Type: application/json
+{
+  "token": "{{idUser}}",
+  "acepted": true,
+  "email": "lisandragomes53@gmail.com"
+}
+
+###
+//Login
 POST {{SimulaBank.API_HostAddress}}/Autenthication
 Accept: application/json
 Content-type: application/json
@@ -31,7 +42,7 @@ Content-type: application/json
 }
 
 ###
- 
+//Bank
 POST {{SimulaBank.API_HostAddress}}/Bank/Create
 Accept: application/json
 Content-Type: application/json
@@ -52,6 +63,7 @@ Authorization: Bearer {{token}}
 }
 
 ###
+
 @onlyActive = true
 GET {{SimulaBank.API_HostAddress}}/Bank/User/{{idUser}}/{{onlyActive}}
 Authorization: Bearer {{token}}
@@ -72,3 +84,14 @@ DELETE {{SimulaBank.API_HostAddress}}/Bank/{{idPiggyDelete}}
 Authorization: Bearer {{token}}
 
 ###
+//Transaction
+
+POST {{SimulaBank.API_HostAddress}}/Transaction/Create
+Authorization: Bearer {{token}}
+Accept: application/json
+Content-Type: application/json
+{
+
+}
+
+

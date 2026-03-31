@@ -23,7 +23,7 @@ namespace SimulaBank.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<IActionResult> Register(RegisterUserInput request)
-        {
+        { 
             var result = await _userApplication.Register(request);
             return ActionResultExtension.ToActionResult(result);
         }

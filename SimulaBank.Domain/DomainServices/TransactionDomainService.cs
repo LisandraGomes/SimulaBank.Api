@@ -5,15 +5,10 @@ namespace SimulaBank.Domain.DomainServices
 {
     public static class TransactionDomainService
     {
-        private const decimal MIN_TRANSACTION_AMOUNT = 0.01m;
-        private const decimal MAX_TRANSACTION_AMOUNT = 1_000_000m;
         private static readonly TimeSpan MAX_SCHEDULE_AHEAD = TimeSpan.FromDays(30);
 
-        public static (bool IsValid, string? ErrorMessage) Validate(decimal value, DateTime dateCreate, DateTime dateFinally, ETypeTransaction typeId, string? idAccountDestination, string? idAccountOrigin)
+        public static (bool IsValid, string ErrorMessage) Validate(decimal value, DateTime dateCreate, DateTime dateFinally, ETypeTransaction typeId, string? idAccountDestination, string? idAccountOrigin)
         {
-            if (!HasValidAmount(value, out var amountMsg))
-                return (false, amountMsg);
-
             if (!HasValidDates(dateCreate, dateFinally, out var dateMsg))
                 return (false, dateMsg);
 
@@ -51,30 +46,6 @@ namespace SimulaBank.Domain.DomainServices
             return (true, null);
         }
 
-        private static bool HasValidAmount(decimal value, out string? message)
-        {
-            if (value < MIN_TRANSACTION_AMOUNT)
-            {
-                message = $"Valor mínimo é {MIN_TRANSACTION_AMOUNT}.";
-                return false;
-            }
-
-            if (value > MAX_TRANSACTION_AMOUNT)
-            {
-                message = $"Valor excede o limite máximo de {MAX_TRANSACTION_AMOUNT}.";
-                return false;
-            }
-
-            if (GetDecimalPlaces(value) > 2)
-            {
-                message = "Valor deve ter no máximo 2 casas decimais.";
-                return false;
-            }
-
-            message = null;
-            return true;
-        }
-
         private static bool HasValidDates(DateTime dateCreate, DateTime dateFinally, out string? message)
         {
             if (dateFinally < dateCreate)
@@ -98,13 +69,6 @@ namespace SimulaBank.Domain.DomainServices
             if (string.IsNullOrWhiteSpace(accountId)) return false;
             var rx = new Regex(@"^[A-Za-z0-9\-]{5,34}$", RegexOptions.Compiled);
             return rx.IsMatch(accountId);
-        }
-
-        private static int GetDecimalPlaces(decimal value)
-        {
-            var bits = decimal.GetBits(value);
-            var scale = (bits[3] >> 16) & 0x7F;
-            return (int)scale;
         }
     }
 }

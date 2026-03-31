@@ -4,6 +4,15 @@ using SimulaBank.Infrastructure.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SimulaBankPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // URL do seu Angular
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfraestructure(builder.Configuration);
 
@@ -43,7 +52,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 
 });
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -57,6 +65,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("SimulaBankPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 

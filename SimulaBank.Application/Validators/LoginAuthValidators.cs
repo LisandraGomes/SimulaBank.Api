@@ -9,6 +9,7 @@ namespace SimulaBank.Application.Validators
         {
             RuleFor(x => x.Login).NotEmpty().MinimumLength(11).NotEqual("00000000000");
             RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+            RuleFor(x => x.TokenRefreshOrAcess).Empty();
         }
     }
 }
