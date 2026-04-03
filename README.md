@@ -26,11 +26,11 @@ O projeto foi construído com foco em boas práticas de organização, padroniza
 ## Explicando
 ### 🔑 Autenticação
 - Autenticação via **JWT**.  
-- Input: **CPF ou E-mail** + **Senha**.  
-- Regras de negócio:
+- **Input**: **CPF ou E-mail** + **Senha**.  
+- **Regras de negócio**:
   - Não é permitido CPF e E-mail nulos ao mesmo tempo.  
   - Validação interna para identificar se o input é CPF ou E-mail.  
-- Serviço dedicado para:
+- **Serviço dedicado para**:
   - Transformação da senha em **Hexadecimal**.  
   - Geração do **Token JWT**.  
 
@@ -46,9 +46,9 @@ Além disso, há um **método de extensão** para `IActionResult` que absorve o 
 ---
 
 ## 🚀 Implementações
-1. Autenticação
-2. Registro e Ativação de usuário verificando a existencia, validações internas para identificar o CPF e email.
-2. Expansão dos endpoints para operações bancárias adicionais (transferências, consulta, criaçao de caixinha e suas operações).  
+ **1.** Autenticação
+ **2.** Registro e Ativação de usuário verificando a existencia, validações internas para identificar o CPF e email.
+ **2.** Expansão dos endpoints para operações bancárias adicionais (transferências, consulta, criaçao de caixinha e suas operações).  
 
 ---
 
