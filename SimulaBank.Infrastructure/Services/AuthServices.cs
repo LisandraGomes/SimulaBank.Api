@@ -33,7 +33,7 @@ namespace SimulaBank.Infrastructure.Services
             }
         }
 
-        public string GenerateToken(string userEmail, string userCpf, bool emailAutorized, string role, string roleDescription, List<Permission> permissions)
+        public string GenerateToken(Guid id, string userEmail, string userCpf, bool emailAutorized, string role, string roleDescription, List<Permission> permissions)
         {
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             string audience = _configuration["Jwt:Audience"];
@@ -41,7 +41,7 @@ namespace SimulaBank.Infrastructure.Services
 
             var credential = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var roleJson = JsonSerializer.Serialize(new { Id = role, Description = roleDescription });
-            var user = JsonSerializer.Serialize(new { Cpf = userCpf, Email = userEmail, Authorized = emailAutorized });
+            var user = JsonSerializer.Serialize(new { Id = id, Cpf = userCpf, Email = userEmail, Authorized = emailAutorized });
             var permission = JsonSerializer.Serialize(permissions.Select(x => x.Nome).ToList());
 
             var claims = new[]
