@@ -71,11 +71,11 @@ Além disso, há um **método de extensão** para `IActionResult` que absorve o 
 
 ## 📂 Estrutura do Projeto
            
-SimulaBank/ 
-│── BD/ Scripts de criação de tabelas
-│── Core/ Domínio e regras de negócio 
-│── Infrastructure/ Adapters e persistência 
-│── Application/ Serviços e casos de uso 
-│── Api/ Controllers e endpoints 
-│── Program.cs Inicialização da aplicação 
-│── DependencyInjection/ Configuração de DI 
+- **SimulaBank/**
+  - **│──BD/** → Scripts de criação de tabelas
+  - **│──Core/** → Domínio e regras de negócio
+  - **│──Infrastructure/** → Adapters e persistência
+  - **│──Application/** → Serviços e casos de uso
+  - **│──Api/** → Controllers e endpoints
+  - **Program.cs** → Inicialização da aplicação
+  - **DependencyInjection/** → Configuração de DI
