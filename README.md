@@ -42,7 +42,7 @@ Esse padrão encapsula:
 
 Além disso, há um **método de extensão** para `IActionResult` que absorve o `StatusCode` do Pattern, garantindo consistência em todos os endpoints.
 
-![alt text](image.png)
+![alt text](image-2.png)
 ---
 
 ## 🚀 Implementações

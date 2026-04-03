@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimulaBank.API.Extension;
 using SimulaBank.Application.Input;
 using SimulaBank.Application.Interfaces;
+using SimulaBank.Application.Outputs;
 
 namespace SimulaBank.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace SimulaBank.API.Controllers
 
         [AllowAnonymous]
         [HttpPost()]
+        [ProducesResponseType(typeof(PatternResult<PatternResult<AuthOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

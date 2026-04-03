@@ -49,6 +49,7 @@ namespace SimulaBank.API.Controllers
         /// <param name="idUser">Identificador do usuário.</param>
         /// <returns>Lista de transações do usuário.</returns>
         [HttpGet("User/{idUser}")]
+        [ProducesResponseType(typeof(PatternResult<List<TransactionOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

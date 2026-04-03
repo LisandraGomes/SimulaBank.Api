@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimulaBank.API.Extension;
 using SimulaBank.Application.Input;
 using SimulaBank.Application.Interfaces;
+using SimulaBank.Application.Outputs;
 
 namespace SimulaBank.API.Controllers
 {
@@ -19,6 +20,7 @@ namespace SimulaBank.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -30,6 +32,7 @@ namespace SimulaBank.API.Controllers
 
         [AllowAnonymous]
         [HttpPut("Active")]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
