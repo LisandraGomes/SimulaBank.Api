@@ -1,22 +1,80 @@
-Api: Simula Bank
-Detalhes: O Core da implementação de alguns serviços simulados de um banco.
+# 🏦 Simula Bank API
 
-Arquitetura: Hexagonal, Ports and Adapters
-Swagger implantado, e arquivo de injeção de dependência separado do program.
+## 📌 Visão Geral
+O **Simula Bank** é uma API desenvolvida em **.NET 9** que simula serviços básicos de um banco, utilizando **arquitetura hexagonal (Ports and Adapters)**.  
+O projeto foi construído com foco em boas práticas de organização, padronização de retornos e extensibilidade.
 
-Framework: .NET 9
+---
 
-Banco de dados, no Docker, sendo SQL Server, imagem criada local, disponível a criação das tabelas no arquivo dentro da pasta BD.
+## ⚙️ Arquitetura
+- **Hexagonal (Ports and Adapters)**: separação clara entre domínio, aplicação e infraestrutura.  
+- **Swagger**: documenta e expõe todos os endpoints da API.  
+- **Injeção de Dependência**: configurada em arquivo separado do `Program.cs`.  
+- **Banco de Dados**:  
+  - SQL Server rodando em **Docker**.  
+  - Imagem criada localmente.  
+  - Scripts de criação de tabelas disponíveis na pasta `BD`.  
+  - Senhas armazenadas em **Hexadecimal** para maior segurança.  
 
-Detalhes das informações do banco:
-- Senha salva em Hexadecimal
+---
 
-Endpoints:
+## 🔑 Autenticação
+### Endpoint de Login
+- Autenticação via **JWT**.  
+- Input: **CPF ou E-mail** + **Senha**.  
+- Regras de negócio:
+  - Não é permitido CPF e E-mail nulos ao mesmo tempo.  
+  - Validação interna para identificar se o input é CPF ou E-mail.  
+- Serviço dedicado para:
+  - Transformação da senha em **Hexadecimal**.  
+  - Geração do **Token JWT**.  
 
-Login: Será realizado através de um input de CPF ou E-mail, combinado com a senha para gerar uma autenticação JWT, isso será validado com alguns métodos internos, se é um CPF, ou se é um E-mail, adicionado de regras de negócio que não deixam ambos serem nulos ao mesmo tempo.
-Foi realizado uma Service dedicada para as associações da Autenticação, fazendo a transformação das informações para o token e a transformação da senha para o padrão centralizado em hexadecimal.
+📌 Exemplo de retorno:  
+A API utiliza um **Pattern Result** centralizado para padronizar respostas.  
+Esse padrão encapsula:
+- Mensagens de erro  
+- Status code  
+- Dados de sucesso  
 
-- Melhorias a serem implementadas :
-1 . Sistema de Cache das consultas do banco.
+Além disso, há um **método de extensão** para `IActionResult` que absorve o `StatusCode` do Pattern, garantindo consistência em todos os endpoints.
 
-Para o Retorno do endpoit:Foi criado um retorno padrão, um Pattern Result que irá absorver mensagens de erros, status code ou sucesso com o item retornado, de forma genérica para ser reaproveitado o mesmo padrão em todos os pontos. Isso trará a centralização e a facilidade do gerenciamento de retorno. Combinado com um método de extensão para o IActionResult da Controller para absorver o StatusCode do próprio Pattern.
+---
+
+## 🚀 Melhorias Futuras
+1. Implementação de **sistema de cache** para consultas ao banco.  
+2. Expansão dos endpoints para operações bancárias adicionais (transferências, extratos, etc.).  
+3. Monitoramento e métricas de performance.  
+
+---
+
+## 📖 Documentação
+- O **Swagger** já está configurado e disponível para explorar todos os endpoints.  
+- Exemplos de autenticação e retorno podem ser visualizados diretamente no Swagger UI.  
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+- **.NET 9**  
+- **SQL Server (Docker)**  
+- **Swagger**  
+- **Arquitetura Hexagonal**  
+- **JWT** para autenticação  
+- **Pattern Result** para padronização de respostas  
+
+---
+
+## 📂 Estrutura do Projeto
+SimulaBank/ │── BD/                  
+# Scripts de criação de tabelas │── Core/               
+# Domínio e regras de negócio │── Infrastructure/      
+# Adapters e persistência │── Application/         
+# Serviços e casos de uso │── Api/                 
+# Controllers e endpoints │── Program.cs           
+# Inicialização da aplicação │── DependencyInjection/ 
+# Configuração de DI
+
+## Swager da Aplicação
+![alt text](image.png)
+
+
+![alt text](image-1.png)
