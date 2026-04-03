@@ -33,10 +33,10 @@ namespace SimulaBank.API.Controllers
         /// <returns>Resultado da criação da transação.</returns>
         [HttpPost("Create")]
         [ProducesResponseType(typeof(PatternResult<TransactionOutput>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateTransaction([FromBody] TransactionInput request)
         {
             var result = await _application.Create(request);
@@ -50,11 +50,10 @@ namespace SimulaBank.API.Controllers
         /// <returns>Lista de transações do usuário.</returns>
         [HttpGet("User/{idUser}")]
         [ProducesResponseType(typeof(PatternResult<List<TransactionOutput>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllByUser([FromRoute] Guid idUser)
         {
             var result = await _application.GetByUser(idUser);

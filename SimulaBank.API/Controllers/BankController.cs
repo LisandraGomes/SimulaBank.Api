@@ -20,11 +20,10 @@ namespace SimulaBank.API.Controllers
 
         [HttpPost("Create")]
         [Authorize(Roles = "InvetstorCliente")]
-        [ProducesResponseType(typeof(PatternResult<PatternResult>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreatePiggy(PiggyRegisterInput request)
         {
             var cpf = User.Claims != null
@@ -36,11 +35,10 @@ namespace SimulaBank.API.Controllers
 
         [HttpGet("User/{id}/{onlyActive}")]
         [Authorize(Roles = "InvetstorCliente")]
-        [ProducesResponseType(typeof(PatternResult<PatternResult<List<PiggyOutput>>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult<List<PiggyOutput>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetPiggysByUserId([FromRoute] Guid id, bool onlyActive)
         {
             var result = await _bankApplication.GetAllPiggyByUserId(id, onlyActive);
@@ -49,11 +47,10 @@ namespace SimulaBank.API.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "InvetstorCliente")]
-        [ProducesResponseType(typeof(PatternResult<PatternResult<PiggyOutput>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult<PiggyOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetBankBoxById(Guid id)
         {
             var result = await _bankApplication.GetBankBoxById(id);
@@ -61,11 +58,10 @@ namespace SimulaBank.API.Controllers
         }
         [HttpPut("{id}")]
         [Authorize(Roles = "InvetstorCliente")]
-        [ProducesResponseType(typeof(PatternResult<PatternResult>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateBankBox(Guid id)
         {
             var result = await _bankApplication.UpdateBankBox(id);
@@ -73,11 +69,10 @@ namespace SimulaBank.API.Controllers
         }
         [HttpDelete("{id}")]
         [Authorize(Roles = "InvetstorCliente")]
-        [ProducesResponseType(typeof(PatternResult<PatternResult>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteBankBox(Guid id)
         {
             var result = await _bankApplication.DeleteBankBox(id);

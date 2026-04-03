@@ -19,11 +19,10 @@ namespace SimulaBank.API.Controllers
 
         [AllowAnonymous]
         [HttpPost()]
-        [ProducesResponseType(typeof(PatternResult<PatternResult<AuthOutput>>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(PatternResult<AuthOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(PatternResult), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login(AuthUserInput request)
         {
             var result = await _authApplication.Login(request);
